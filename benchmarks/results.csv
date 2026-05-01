@@ -1,3 +1,3 @@
 gpu,gpu_arch,vram_gb,model,quant,backend,build,gen_tps,prompt_tps,context,flags,user,date,notes
 RX 7900 GRE,gfx1100,16,moonshotai/Moonlight-16B-A3B-Instruct,Q6_K,llama.cpp,b8999,100.2,188.1,32768,"-ngl 99 -fa on -ctk q8_0 -ctv q8_0",jscMR,2026-05-02,All 28 layers on GPU. Smoke test prompt only.
-RX 7900 GRE,gfx1100,16,unsloth/Qwen3.6-35B-A3B-GGUF,Q4_K_S,llama.cpp,b8999,,,65536,"-ngl 99 -ncmoe 32 -fa on -ctk q8_0 -ctv q8_0",jscMR,2026-05-02,Pending re-bench with proper HIP build (initial run was accidental CPU-only).
+RX 7900 GRE,gfx1100,16,unsloth/Qwen3.6-35B-A3B-GGUF,Q4_K_S,llama.cpp,b8999,22.7,41.7,32768,"-ngl 99 -ncmoe 32 -fa on -ctk q8_0 -ctv q8_0",jscMR,2026-05-02,"41/41 layers offloaded. 5.6GB on GPU + 15.5GB experts in DDR5 RAM via -ncmoe 32. DDR5 bandwidth is the bottleneck, not GPU."

@@ -19,7 +19,7 @@ This repo is a community-maintained cookbook + benchmark database for running op
 | GPU | Arch | Model | Quant | Backend | Gen tok/s | Prompt tok/s | Source |
 |---|---|---|---|---|---|---|---|
 | RX 7900 GRE 16GB | gfx1100 | Moonlight-16B-A3B-Instruct | Q6_K | llama.cpp b8999 | **100** | 188 | [bench](./benchmarks/results.csv) |
-| RX 7900 GRE 16GB | gfx1100 | Qwen3.6-35B-A3B-UD | Q4_K_S | llama.cpp b8999 | TBD | TBD | [bench](./benchmarks/results.csv) |
+| RX 7900 GRE 16GB | gfx1100 | Qwen3.6-35B-A3B-UD | Q4_K_S | llama.cpp b8999 | **22.7** | 41.7 | [bench](./benchmarks/results.csv) |
 
 PR your numbers to grow this table.
 

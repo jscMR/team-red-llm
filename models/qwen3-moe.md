@@ -41,6 +41,14 @@ HIP_VISIBLE_DEVICES=0 llama-server \
   --chat-template-kwargs '{"preserve_thinking": true}'
 ```
 
+## Verified results
+
+| GPU | Quant | `-ncmoe` | Gen tok/s | Prompt tok/s | Context | Build |
+|---|---|---|---|---|---|---|
+| RX 7900 GRE | Q4_K_S | 32 | 22.7 | 41.7 | 32K | b8999 |
+
+Note: speed is the same with or without thinking — bottleneck is DDR5 bandwidth streaming experts to GPU, not compute.
+
 ## Tuning `-ncmoe`
 
 | `-ncmoe` | Behavior on 16GB |
