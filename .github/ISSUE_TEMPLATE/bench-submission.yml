@@ -1,0 +1,78 @@
+name: Benchmark submission
+description: Share tok/s numbers for a model running on your AMD GPU
+title: "[bench] <gpu> · <model> · <quant>"
+labels: ["benchmark"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sharing your numbers! Fill this in and a maintainer will fold it into `benchmarks/results.csv`.
+        For reproducibility, run `llama-bench` with `-p 512 -n 128` if possible.
+  - type: input
+    id: gpu
+    attributes:
+      label: GPU
+      description: e.g. RX 7900 GRE 16GB, MI300X, RX 9070 XT
+      placeholder: RX 7900 GRE
+    validations:
+      required: true
+  - type: input
+    id: gpu_arch
+    attributes:
+      label: GPU arch (gfx code)
+      description: Run `rocminfo | grep gfx` to find it.
+      placeholder: gfx1100
+    validations:
+      required: true
+  - type: input
+    id: model
+    attributes:
+      label: Model
+      description: HuggingFace repo or canonical name
+      placeholder: gabriellarson/Moonlight-16B-A3B-Instruct-GGUF
+    validations:
+      required: true
+  - type: input
+    id: quant
+    attributes:
+      label: Quantization
+      placeholder: Q6_K
+    validations:
+      required: true
+  - type: input
+    id: backend
+    attributes:
+      label: Backend + build
+      placeholder: llama.cpp b8999
+    validations:
+      required: true
+  - type: input
+    id: gen_tps
+    attributes:
+      label: Generation tok/s
+      placeholder: "100.2"
+    validations:
+      required: true
+  - type: input
+    id: prompt_tps
+    attributes:
+      label: Prompt tok/s
+      placeholder: "188.1"
+  - type: input
+    id: context
+    attributes:
+      label: Context length used
+      placeholder: "32768"
+  - type: textarea
+    id: flags
+    attributes:
+      label: Flags
+      description: Full launch command or relevant flags
+      render: bash
+      placeholder: |
+        -ngl 99 -fa on -ctk q8_0 -ctv q8_0
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Anything weird? Crashes? Tuning that helped?

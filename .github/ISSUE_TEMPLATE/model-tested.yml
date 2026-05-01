@@ -1,0 +1,44 @@
+name: Model tested
+description: Document a new model that works (or doesn't) on AMD GPUs
+title: "[model] <model name> on <gpu>"
+labels: ["model"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for adding a new entry to `models/`. If the model just needs a benchmark added, use the benchmark template instead.
+  - type: input
+    id: model
+    attributes:
+      label: Model
+      placeholder: openai/gpt-oss-20b
+    validations:
+      required: true
+  - type: dropdown
+    id: status
+    attributes:
+      label: Status
+      options:
+        - "✅ Works fully on GPU"
+        - "⚠️ Partial (some layers/quants on CPU)"
+        - "❌ Broken on ROCm"
+    validations:
+      required: true
+  - type: textarea
+    id: working_quants
+    attributes:
+      label: Working quantizations
+      placeholder: |
+        Q4_K_M ✅
+        Q6_K ✅
+        MXFP4 ❌ (CPU fallback on ROCm)
+  - type: textarea
+    id: launch_cmd
+    attributes:
+      label: Launch command
+      render: bash
+  - type: textarea
+    id: quirks
+    attributes:
+      label: Quirks / notes
+      description: Architecture quirks, special flags, recommended sampler params, etc.

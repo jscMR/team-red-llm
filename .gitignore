@@ -1,0 +1,21 @@
+# Models — never commit GGUFs, they're huge and live on HF
+*.gguf
+*.safetensors
+*.bin
+models/*.gguf
+
+# Build artifacts (in case anyone checks out llama.cpp here)
+build/
+*.o
+*.so
+*.so.*
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
