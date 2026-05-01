@@ -1,3 +1,5 @@
 gpu,gpu_arch,vram_gb,model,quant,backend,build,gen_tps,prompt_tps,context,flags,user,date,notes
 RX 7900 GRE,gfx1100,16,moonshotai/Moonlight-16B-A3B-Instruct,Q6_K,llama.cpp,b8999,100.2,188.1,32768,"-ngl 99 -fa on -ctk q8_0 -ctv q8_0",jscMR,2026-05-02,All 28 layers on GPU. Smoke test prompt only.
 RX 7900 GRE,gfx1100,16,unsloth/Qwen3.6-35B-A3B-GGUF,Q4_K_S,llama.cpp,b8999,22.7,41.7,32768,"-ngl 99 -ncmoe 32 -fa on -ctk q8_0 -ctv q8_0",jscMR,2026-05-02,"41/41 layers offloaded. 5.6GB on GPU + 15.5GB experts in DDR5 RAM via -ncmoe 32. DDR5 bandwidth is the bottleneck, not GPU."
+RX 7900 GRE,gfx1100,16,unsloth/gemma-4-26B-A4B-it-GGUF,UD-Q6_K,llama.cpp,b8999,17.3,80.7,32768,"-ngl 99 -ncmoe 16 -fa on -ctk q8_0 -ctv q8_0",jscMR,2026-05-02,"31/31 layers. 11.6GB GPU + 12.1GB RAM. UD quants are larger than plain Q6_K. -ncmoe 8 OOMs (needs 16.8GB)."
+RX 7900 GRE,gfx1100,16,unsloth/gemma-4-26B-A4B-it-GGUF,UD-Q4_K_M,llama.cpp,b8999,31.0,61.3,16384,"-ngl 99 -ncmoe 6 -fa on -ctk q8_0 -ctv q8_0",jscMR,2026-05-02,"31/31 layers. 13.3GB GPU + 3.8GB RAM. Sweet spot for Gemma-4 on 16GB cards. ~2x faster than UD-Q6_K."

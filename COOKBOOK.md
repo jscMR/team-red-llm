@@ -11,6 +11,7 @@ Battle-tested recipes for running LLMs on AMD GPUs. Each section ends with the g
 - [llama-server flags reference](#llama-server-flags-reference)
 - [Running on NixOS](#running-on-nixos)
 - [Diagnosing CPU-only fallback](#diagnosing-cpu-only-fallback)
+- [Memory pressure and ZRAM freezes](#memory-pressure-and-zram-freezes)
 
 ---
 
@@ -201,3 +202,59 @@ If all checks pass and you're still slow, run `llama-bench` for a clean benchmar
 ```bash
 llama-bench -m model.gguf -p 512 -n 128 -ngl 99
 ```
+
+---
+
+## Memory pressure and ZRAM freezes
+
+If your system freezes during inference (mouse stuck, terminal unresponsive, GPU at 100% but no progress), the culprit is usually memory pressure colliding with ZRAM compression.
+
+### What's happening
+
+`llama-server` uses `mmap` by default to load GGUFs. The kernel keeps loaded models in **page cache** even after the server exits. If you test multiple large models in one session:
+
+```
+Test 1: Load Qwen3.6-35B (20 GB) → exit → 20 GB still in page cache
+Test 2: Load Gemma-4 (16 GB)     → exit → 36 GB nominal in page cache
+Test 3: Load Moonlight (14 GB)   → exit → 50 GB nominal in page cache
+```
+
+You only have 30 GB RAM, so the kernel starts compressing cold pages to ZRAM (if enabled). On NixOS the default `zramSwap.memoryPercent` is often set high (50%+).
+
+When you launch a new `llama-server` with `-ncmoe`, three things now compete for CPU:
+
+1. Inference compute (already 400-500% CPU)
+2. Page faults reading mmap'd model from disk/cache
+3. ZRAM compression of cold pages
+
+The kernel can't keep up → mouse and terminal freeze for seconds at a time → eventually recovers but loops.
+
+### Detection
+
+```bash
+# During inference, in another terminal:
+free -h            # If swap > 0 GB, ZRAM is active
+btop               # Watch for CPU saturation + swap activity
+```
+
+### Prevention
+
+1. **Always stop the previous server before testing another model.** Wait for `pkill` to actually release the process.
+2. **Use lighter quants** — UD-Q6_K of a 26B MoE is 22 GB on disk, plus 12 GB streaming via `-ncmoe`. UD-Q4_K_M (~16 GB total) leaves much more headroom.
+3. **Lower ZRAM allocation** in NixOS config:
+   ```nix
+   zramSwap = {
+     enable = true;
+     memoryPercent = 25;  # was 50, reduces compression overhead
+   };
+   ```
+4. **Don't run inference while page cache is hot from previous tests.** If `free -h` shows `buff/cache` near max, restart `llama-server` after a minute or run `sync` and let the kernel age out cold pages.
+
+### Recovery
+
+If frozen but not unrecoverably:
+- SSH from another machine, kill `llama-server` with `kill -9 <pid>`
+- Wait 30 seconds for ZRAM to decompress
+- `free -h` should return to normal
+
+If totally frozen, hard reboot. No data loss for inference workloads — but obviously don't do this with unsaved work in other apps.
