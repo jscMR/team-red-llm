@@ -1,0 +1,77 @@
+name: Validate
+
+on:
+  pull_request:
+    paths:
+      - "benchmarks/**"
+      - "**/*.md"
+  push:
+    branches: [main]
+
+jobs:
+  csv:
+    name: Benchmark CSV format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate header and rows
+        run: |
+          set -euo pipefail
+          CSV=benchmarks/results.csv
+
+          EXPECTED_HEADER="gpu,gpu_arch,vram_gb,model,quant,backend,build,gen_tps,prompt_tps,context,flags,user,date,notes"
+          ACTUAL_HEADER="$(head -1 "$CSV")"
+
+          if [[ "$ACTUAL_HEADER" != "$EXPECTED_HEADER" ]]; then
+            echo "::error::CSV header mismatch"
+            echo "Expected: $EXPECTED_HEADER"
+            echo "Actual:   $ACTUAL_HEADER"
+            exit 1
+          fi
+
+          # Each non-empty row must have 14 fields (commas inside quotes don't count)
+          # Use python for proper CSV parsing
+          python3 - <<'PY'
+          import csv, sys
+          ok = True
+          with open("benchmarks/results.csv") as f:
+              reader = csv.reader(f)
+              header = next(reader)
+              if len(header) != 14:
+                  print(f"::error::Header has {len(header)} fields, expected 14")
+                  sys.exit(1)
+              for i, row in enumerate(reader, start=2):
+                  if not row or all(not c.strip() for c in row):
+                      continue  # skip blank lines
+                  if len(row) != 14:
+                      print(f"::error file=benchmarks/results.csv,line={i}::Row has {len(row)} fields, expected 14")
+                      ok = False
+                      continue
+                  # Date check (column 12, 0-indexed)
+                  date = row[12]
+                  if not date or len(date) != 10 or date[4] != "-" or date[7] != "-":
+                      print(f"::error file=benchmarks/results.csv,line={i}::Invalid ISO date '{date}', expected YYYY-MM-DD")
+                      ok = False
+                  # gpu_arch sanity (column 1)
+                  arch = row[1]
+                  if not (arch.startswith("gfx") or arch.startswith("CDNA") or arch == "unknown"):
+                      print(f"::warning file=benchmarks/results.csv,line={i}::Unusual gpu_arch '{arch}', expected something like gfx1100")
+          sys.exit(0 if ok else 1)
+          PY
+
+  markdown:
+    name: Markdown lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DavidAnson/markdownlint-cli2-action@v16
+        with:
+          globs: "**/*.md"
+          config: |
+            {
+              "default": true,
+              "MD013": false,
+              "MD033": false,
+              "MD041": false,
+              "MD024": { "siblings_only": true }
+            }

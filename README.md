@@ -16,12 +16,16 @@ This repo is a community-maintained cookbook + benchmark database for running op
 
 ## Quick benchmarks
 
-| GPU | Arch | Model | Quant | Backend | Gen tok/s | Prompt tok/s | Source |
+| GPU | Arch | Model | Quant | Mode | Gen tok/s | Prompt tok/s | Source |
 |---|---|---|---|---|---|---|---|
-| RX 7900 GRE 16GB | gfx1100 | Moonlight-16B-A3B-Instruct | Q6_K | llama.cpp b8999 | **100** | 188 | [bench](./benchmarks/results.csv) |
-| RX 7900 GRE 16GB | gfx1100 | gemma-4-26B-A4B-it | UD-Q4_K_M | llama.cpp b8999 | **31.0** | 61.3 | [bench](./benchmarks/results.csv) |
-| RX 7900 GRE 16GB | gfx1100 | gemma-4-26B-A4B-it | UD-Q6_K | llama.cpp b8999 | 17.3 | 80.7 | [bench](./benchmarks/results.csv) |
-| RX 7900 GRE 16GB | gfx1100 | Qwen3.6-35B-A3B-UD | Q4_K_S | llama.cpp b8999 | **22.7** | 41.7 | [bench](./benchmarks/results.csv) |
+| RX 7900 GRE 16GB | gfx1100 | Moonlight-16B-A3B-Instruct | Q6_K | Full GPU | **100.2** | 188.1 | [bench](./benchmarks/results.csv) |
+| RX 7900 GRE 16GB | gfx1100 | gemma-4-26B-A4B-it | UD-Q4_K_M | MoE offload (`-ncmoe 6`) | **31.0** | 61.3 | [bench](./benchmarks/results.csv) |
+| RX 7900 GRE 16GB | gfx1100 | Qwen3.6-35B-A3B-UD | Q4_K_S | MoE offload (`-ncmoe 32`) | **22.7** | 41.7 | [bench](./benchmarks/results.csv) |
+| RX 7900 GRE 16GB | gfx1100 | gemma-4-26B-A4B-it | UD-Q6_K | MoE offload (`-ncmoe 16`) | 17.3 | 80.7 | [bench](./benchmarks/results.csv) |
+
+> **"Mode" column legend:**
+> - **Full GPU** — entire model in VRAM, no `-ncmoe`. Capped by GPU memory bandwidth (~576 GB/s on the 7900 GRE) → highest tok/s.
+> - **MoE offload** — model too big for VRAM, FFN experts of first N layers in CPU RAM via `-ncmoe N`. Capped by DDR5 bandwidth (~89 GB/s) → much slower but enables 30B+ models on 16GB cards.
 
 PR your numbers to grow this table.
 
