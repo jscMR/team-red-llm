@@ -42,6 +42,27 @@ PR your numbers to grow this table.
 | `gfx1150/1151` | Strix Halo | Ryzen AI Max+ 395 | ⚠️ Bleeding edge |
 | `gfx942/950` | CDNA3 | MI300X, MI325X | ✅ Datacenter |
 
+## Related tools
+
+### 🔍 [llmfit](https://github.com/AlexsJones/llmfit) — "¿Qué modelos caben en mi GPU?"
+
+A Rust TUI/CLI by [Alex Jones](https://github.com/AlexsJones) that detects your hardware (including AMD GPUs via `rocm-smi`), scores hundreds of models against your VRAM/RAM, and tells you which ones will actually run. Supports MoE architectures, multi-GPU, community benchmarks from [localmaxxing.com](https://localmaxxing.com), and hardware simulation ("what if I had a 7900 XTX?").
+   
+   ```bash
+   # Quick install (all platforms)
+   curl -fsSL https://llmfit.axjns.dev/install.sh | sh
+   
+   # NixOS
+   nix run github:AlexsJones/llmfit
+   
+   # Homebrew
+   brew install llmfit
+   ```
+
+> **Workflow:** Use `llmfit` to find what fits → come back here for the exact flags and real tok/s numbers.
+
+
+
 ## How to contribute
 
 1. **Got a benchmark?** Open an issue with the [benchmark template](./.github/ISSUE_TEMPLATE/bench-submission.yml) or PR directly to `benchmarks/results.csv`.
