@@ -72,6 +72,26 @@
     72|    72|
     73|    73|
     74|    74|
+### 🚫 Why we don't recommend Ollama or LM Studio for AMD
+
+Many newcomers reach for Ollama or LM Studio because they "just work" on NVIDIA. On AMD, they don't.
+
+| | Ollama | LM Studio | Manual llama.cpp (this repo) |
+|---|---|---|---|
+| Detects RX 7900 GRE / 7800 XT | ⚠️ Often fails | ❌ Not supported | ✅ |
+| Flash Attention | ❌ Disabled on AMD | ❌ | ✅ `-fa on` |
+| Vulkan fallback | ❌ | ❌ | ✅ |
+| KV cache quantization | ❌ | ❌ | ✅ `-ctk q8_0 -ctv q8_0` |
+| MoE offloading (`-ncmoe`) | ❌ | ❌ | ✅ |
+| Performance (8B Q4) | ~35 tok/s | CPU only | **60-100 tok/s** |
+| Memory management | ⚠️ OOMs on 16GB | ❌ | ✅ mmap + fine-grained |
+
+**LM Studio** has no AMD GPU support — period. It falls back to CPU silently.
+
+**Ollama** bundles its own ROCm, which conflicts with system ROCm, and only reliably detects the RX 7900 XT/XTX. Even when it works, it's 30-40% slower than a manual build because it lacks Flash Attention and KV cache quantization on AMD.
+
+**Bottom line:** Building llama.cpp from source (or using our `run-model.sh`) is the only path that extracts everything your AMD GPU is capable of.
+
     75|    75|## How to contribute
     76|    76|
     77|    77|1. **Got a benchmark?** Open an issue with the [benchmark template](./.github/ISSUE_TEMPLATE/bench-submission.yml) or PR directly to `benchmarks/results.csv`.
