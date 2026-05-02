@@ -2,6 +2,8 @@
 
 > Running LLMs locally on AMD GPUs, by people who actually do it.
 
+![demo](./demo.gif)
+
 The CUDA-centric LLM ecosystem treats AMD users as second-class citizens. Half the guides assume `nvidia-smi`, half the tools silently fall back to CPU on ROCm, and the gotchas are scattered across Reddit threads from 2023.
 
 This repo is a community-maintained cookbook + benchmark database for running open-source LLMs on AMD hardware (consumer Radeon, datacenter Instinct, and Strix Halo APUs). If you've built a homelab around Team Red and got burned by some ROCm trap, document it here so the next person doesn't have to.
