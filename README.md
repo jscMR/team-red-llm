@@ -10,7 +10,14 @@ This repo is a community-maintained cookbook + benchmark database for running op
 
 ## What's inside
 
-- **[COOKBOOK.md](./COOKBOOK.md)** — Step-by-step setup guides + every gotcha we've hit
+### 🔧 Setup & Troubleshooting
+- **[ROCm-SETUP.md](./ROCm-SETUP.md)** — Install ROCm on your distro without losing your mind
+- **[COOKBOOK.md](./COOKBOOK.md)** — Step-by-step guides + every gotcha we've hit
+- **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)** — "GPU not detected", "why is it slow?", and 5 other demons
+
+### 📊 Guides & Reference
+- **[VRAM-GUIDE.md](./VRAM-GUIDE.md)** — What models actually fit on your card
+- **[PERFORMANCE.md](./PERFORMANCE.md)** — Get the tok/s your GPU actually owes you
 - **[benchmarks/results.csv](./benchmarks/results.csv)** — Real tok/s numbers, per GPU + model + quant
 - **[hardware/](./hardware/)** — Per-GPU notes (BIOS, drivers, thermals, sweet-spot models)
 - **[models/](./models/)** — Per-model notes (working flags, broken quants, architecture quirks)
