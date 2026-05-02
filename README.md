@@ -67,11 +67,9 @@
     67|    67|   # Homebrew
     68|    68|   brew install llmfit
     69|    69|   ```
-    70|    70|
-    71|    71|> **Workflow:** Use `llmfit` to find what fits → come back here for the exact flags and real tok/s numbers.
-    72|    72|
-    73|    73|
-    74|    74|
+
+> **Workflow:** Use `llmfit` to find what fits → come back here for the exact flags and real tok/s numbers.
+
 ### 🚫 Why we don't recommend Ollama or LM Studio for AMD
 
 Many newcomers reach for Ollama or LM Studio because they "just work" on NVIDIA. On AMD, they don't.
